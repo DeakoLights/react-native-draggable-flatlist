@@ -617,7 +617,13 @@ class DraggableFlatList<T> extends React.Component<
       this.isAutoScrollInProgress.native.setValue(1);
       this.isAutoScrollInProgress.js = true;
       const flatlistRef = this.flatlistRef.current;
-      if (flatlistRef) flatlistRef.scrollToOffset({ offset });
+      if (flatlistRef) {
+        if (flatlistRef.scrollToOffset) {
+          flatlistRef.scrollToOffset({ offset: offset });
+        } else if ((flatlistRef as any).getNode) {
+          (flatlistRef as any).getNode().scrollToOffset({ offset: offset });
+        }
+      }
     });
 
   getScrollTargetOffset = (
